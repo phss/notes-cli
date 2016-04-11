@@ -20,8 +20,11 @@ def command_view(index, query):
     terms = [FuzzyTerm("content", word, maxdist=2) for word in query.split()]
     search_query = Or(terms)
     results = searcher.search(search_query)
-    for result in results:
-      print result 
+    if len(results) == 0:
+      print "No results found"
+    else:
+      result = results[0]
+      print open(result["filename"]).read()
 
 def command_reindex(index_full_path, notes_path):
   shutil.rmtree(index_full_path, True)
