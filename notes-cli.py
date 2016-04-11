@@ -60,6 +60,8 @@ def main():
   index = create_or_load_index(config["indexdir"], expanduser(config["notesdir"]))
   if options.command == "ls":
     command_ls(index)
+  elif options.command == "view":
+    command_view(index, options.query)
   else:
     print "Not supported"
 
