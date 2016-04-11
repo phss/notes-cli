@@ -12,8 +12,8 @@ from whoosh.query import FuzzyTerm, Term, Or
 def command_view(index, query):
   with index.searcher() as searcher:
     terms = [FuzzyTerm("content", word, maxdist=2) for word in query.split()]
-    query = Or(terms)
-    results = searcher.search(query)
+    search_query = Or(terms)
+    results = searcher.search(search_query)
     for result in results:
       print result 
 
