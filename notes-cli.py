@@ -26,11 +26,11 @@ def command_view(index, query):
       result = results[0]
       print open(result["filename"]).read()
 
-def command_reindex(index_full_path, notes_path):
-  shutil.rmtree(index_full_path, True)
-  os.mkdir(index_full_path)
+def command_reindex(index_path, notes_path):
+  shutil.rmtree(index_path, True)
+  os.mkdir(index_path)
   schema = Schema(filename=TEXT(stored=True), content=TEXT)
-  index = ix.create_in(index_full_path, schema)
+  index = ix.create_in(index_path, schema)
   writer = index.writer()
   for note in os.listdir(notes_path):
     note_full_path = os.path.join(notes_path, note)
@@ -51,20 +51,23 @@ def parse_options():
   return parser.parse_args()
 
 def create_or_load_index(index_path, notes_path):
-  index_full_path = expanduser(index_path)
-  if isdir(index_full_path):
-    return ix.open_dir(index_full_path)
+  if isdir(index_path):
+    return ix.open_dir(index_path)
   else:
-    return command_reindex(index_full_path, notes_path)
+    return command_reindex(index_path, notes_path)
 
 def main():
   config = load_config_from("~/.notes-cli/config.yaml")
+  index_path = expanduser(config["indexdir"])
+  notes_path = expanduser(config["notesdir"])
   options = parse_options()
-  index = create_or_load_index(config["indexdir"], expanduser(config["notesdir"]))
+  index = create_or_load_index(index_path, notes_path)
   if options.command == "ls":
     command_ls(index)
   elif options.command == "view":
     command_view(index, options.query)
+  elif options.command == "reindex":
+    command_reindex(index_path, notes_path)
   else:
     print "Not supported"
 
