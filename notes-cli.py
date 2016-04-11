@@ -8,6 +8,12 @@ from whoosh.fields import *
 from whoosh.qparser import QueryParser
 from whoosh.query import FuzzyTerm, Term, Or
 
+def command_ls(index):
+  with index.searcher() as searcher:
+    results = searcher.documents()
+    print "Indexed files:"
+    for result in results:
+      print result["filename"]
 
 def command_view(index, query):
   with index.searcher() as searcher:
@@ -52,7 +58,10 @@ def main():
   config = load_config_from("~/.notes-cli/config.yaml")
   options = parse_options()
   index = create_or_load_index(config["indexdir"], expanduser(config["notesdir"]))
-  command_view(index, "read filesystem")
+  if options.command == "ls":
+    command_ls(index)
+  else:
+    print "Not supported"
 
 if __name__ == "__main__":
   main()
