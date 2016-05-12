@@ -26,6 +26,10 @@ def command_view(index, query):
       result = results[0]
       print open(result["filename"]).read()
 
+def command_add(index, filename):
+  print "Adding", filename
+  print "NOT YET :("
+
 def command_reindex(index_path, notes_path):
   shutil.rmtree(index_path, True)
   os.mkdir(index_path)
@@ -48,6 +52,7 @@ def parse_options():
   parser.add_argument("command",
                       choices=["ls", "add", "rm", "edit", "view", "reindex"])
   parser.add_argument("--query")
+  parser.add_argument("--file")
   return parser.parse_args()
 
 def create_or_load_index(index_path, notes_path):
@@ -66,6 +71,8 @@ def main():
     command_ls(index)
   elif options.command == "view":
     command_view(index, options.query)
+  elif options.command == "add":
+    command_add(index, options.file)
   elif options.command == "reindex":
     command_reindex(index_path, notes_path)
   else:
