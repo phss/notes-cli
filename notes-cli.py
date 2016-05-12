@@ -2,11 +2,14 @@ import argparse
 import yaml
 import shutil
 import os
+from subprocess import call
 from os.path import expanduser, isdir
 import whoosh.index as ix
 from whoosh.fields import *
 from whoosh.qparser import QueryParser
 from whoosh.query import FuzzyTerm, Term, Or
+
+EDITOR = os.environ.get('EDITOR','vim')
 
 def command_ls(index):
   with index.searcher() as searcher:
@@ -26,9 +29,19 @@ def command_view(index, query):
       result = results[0]
       print open(result["filename"]).read()
 
-def command_add(index, filename):
-  print "Adding", filename
-  print "NOT YET :("
+def command_add(index, notes_path, filename):
+  full_path = os.path.join(notes_path, filename)
+
+  preread = ""
+  if os.path.isfile(full_path):
+    preread = open(full_path, "r").read()
+
+  with open(full_path, "w") as f:
+    f.write(preread)
+    f.flush()
+    call([EDITOR, f.name])
+
+  print "Added", full_path
 
 def command_reindex(index_path, notes_path):
   shutil.rmtree(index_path, True)
@@ -72,7 +85,7 @@ def main():
   elif options.command == "view":
     command_view(index, options.query)
   elif options.command == "add":
-    command_add(index, options.file)
+    command_add(index, notes_path, options.file)
   elif options.command == "reindex":
     command_reindex(index_path, notes_path)
   else:
