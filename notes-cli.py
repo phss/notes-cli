@@ -86,6 +86,7 @@ def main():
     command_view(index, options.query)
   elif options.command == "add":
     command_add(index, notes_path, options.file)
+    command_reindex(index_path, notes_path)
   elif options.command == "reindex":
     command_reindex(index_path, notes_path)
   else:
