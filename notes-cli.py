@@ -37,19 +37,22 @@ def command_view(index, query):
         result = results[choice]
       print open(result["filename"]).read()
 
-def command_add(index, notes_path, filename):
-  full_path = os.path.join(notes_path, filename)
-
+def edit_file(full_path):
   preread = ""
   if os.path.isfile(full_path):
     preread = open(full_path, "r").read()
-
   with open(full_path, "w") as f:
     f.write(preread)
     f.flush()
     call([EDITOR, f.name])
 
+def command_add(index, notes_path, filename):
+  full_path = os.path.join(notes_path, filename)
+  edit_file(full_path)
   print "Added", full_path
+
+def command_edit(index, query):
+  print "Nothing"
 
 def command_reindex(index_path, notes_path):
   shutil.rmtree(index_path, True)
@@ -94,6 +97,9 @@ def main():
     command_view(index, options.query)
   elif options.command == "add":
     command_add(index, notes_path, options.file)
+    command_reindex(index_path, notes_path)
+  elif options.command == "edit":
+    command_edit(index, options.query)
     command_reindex(index_path, notes_path)
   elif options.command == "reindex":
     command_reindex(index_path, notes_path)
