@@ -18,7 +18,7 @@ def command_ls(index):
     for result in results:
       print result["filename"]
 
-def command_view(index, query):
+def find_result(index, query):
   with index.searcher() as searcher:
     terms = [FuzzyTerm("content", word, maxdist=2) for word in query.split()]
     search_query = Or(terms)
@@ -35,7 +35,11 @@ def command_view(index, query):
         print "Which one?"
         choice = int(input()) - 1
         result = results[choice]
-      print open(result["filename"]).read()
+      return result["filename"]
+
+def command_view(index, query):
+  result_file = find_result(index, query)
+  print open(result_file).read()
 
 def edit_file(full_path):
   preread = ""
