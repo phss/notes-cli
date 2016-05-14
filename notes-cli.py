@@ -24,22 +24,24 @@ def find_result(index, query):
     search_query = Or(terms)
     results = searcher.search(search_query)
     if len(results) == 0:
-      print "No results found"
+      return None
+    elif len(results) == 1:
+      result = results[0]
     else:
-      if len(results) == 1:
-        result = results[0]
-      else:
-        print "Options:"
-        for i, result in enumerate(results):
-          print "%d) %s" % (i+1, result["filename"])
-        print "Which one?"
-        choice = int(input()) - 1
-        result = results[choice]
-      return result["filename"]
+      print "Options:"
+      for i, result in enumerate(results):
+        print "%d) %s" % (i+1, result["filename"])
+      print "Which one?"
+      choice = int(input()) - 1
+      result = results[choice]
+    return result["filename"]
 
 def command_view(index, query):
   result_file = find_result(index, query)
-  print open(result_file).read()
+  if result_file is None:
+    print "No results found"
+  else:
+    print open(result_file).read()
 
 def edit_file(full_path):
   preread = ""
