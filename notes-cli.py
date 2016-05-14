@@ -28,11 +28,14 @@ def command_view(index, query):
     else:
       if len(results) == 1:
         result = results[0]
-        print open(result["filename"]).read()
       else:
         print "Options:"
         for i, result in enumerate(results):
-          print "%d) %s" % (i, result["filename"])
+          print "%d) %s" % (i+1, result["filename"])
+        print "Which one?"
+        choice = int(input()) - 1
+        result = results[choice]
+      print open(result["filename"]).read()
 
 def command_add(index, notes_path, filename):
   full_path = os.path.join(notes_path, filename)
