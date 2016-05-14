@@ -58,7 +58,11 @@ def command_add(index, notes_path, filename):
   print "Added", full_path
 
 def command_edit(index, query):
-  print "Nothing"
+  result_file = find_result(index, query)
+  if result_file is None:
+    print "No results found"
+  else:
+    print edit_file(result_file)
 
 def command_reindex(index_path, notes_path):
   shutil.rmtree(index_path, True)
