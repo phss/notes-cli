@@ -62,7 +62,14 @@ def command_edit(index, query):
   if result_file is None:
     print "No results found"
   else:
-    print edit_file(result_file)
+    edit_file(result_file)
+
+def command_rm(index, query):
+  result_file = find_result(index, query)
+  if result_file is None:
+    print "No results found"
+  else:
+    os.remove(result_file)
 
 def command_reindex(index_path, notes_path):
   shutil.rmtree(index_path, True)
@@ -110,6 +117,9 @@ def main():
     command_reindex(index_path, notes_path)
   elif options.command == "edit":
     command_edit(index, options.query)
+    command_reindex(index_path, notes_path)
+  elif options.command == "rm":
+    command_rm(index, options.query)
     command_reindex(index_path, notes_path)
   elif options.command == "reindex":
     command_reindex(index_path, notes_path)
