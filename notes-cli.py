@@ -26,8 +26,13 @@ def command_view(index, query):
     if len(results) == 0:
       print "No results found"
     else:
-      result = results[0]
-      print open(result["filename"]).read()
+      if len(results) == 1:
+        result = results[0]
+        print open(result["filename"]).read()
+      else:
+        print "Options:"
+        for i, result in enumerate(results):
+          print "%d) %s" % (i, result["filename"])
 
 def command_add(index, notes_path, filename):
   full_path = os.path.join(notes_path, filename)
