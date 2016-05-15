@@ -20,7 +20,7 @@ def command_ls(index):
 
 def find_result(index, query):
   with index.searcher() as searcher:
-    terms = [FuzzyTerm("content", word, maxdist=2) for word in query.split()]
+    terms = [FuzzyTerm("content", word, maxdist=2) for word in query]
     search_query = Or(terms)
     results = searcher.search(search_query)
     if len(results) == 0:
@@ -92,7 +92,7 @@ def parse_options():
   parser = argparse.ArgumentParser()
   parser.add_argument("command",
                       choices=["ls", "add", "rm", "edit", "view", "reindex"])
-  parser.add_argument("--query")
+  parser.add_argument("query", nargs="*")
   parser.add_argument("--file")
   return parser.parse_args()
 
