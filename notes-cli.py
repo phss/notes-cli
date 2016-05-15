@@ -69,7 +69,10 @@ def command_rm(index, query):
   if result_file is None:
     print "No results found"
   else:
-    os.remove(result_file)
+    print "Are you sure you want to delete %s? (y/n)" % result_file
+    choice = raw_input()
+    if choice == "y":
+      os.remove(result_file)
 
 def command_reindex(index_path, notes_path):
   shutil.rmtree(index_path, True)
