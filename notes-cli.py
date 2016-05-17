@@ -11,6 +11,9 @@ from whoosh.query import FuzzyTerm, Term, Or
 
 EDITOR = os.environ.get('EDITOR','vim')
 
+def get_choice():
+  return raw_input()
+
 def command_ls(index):
   with index.searcher() as searcher:
     results = searcher.documents()
@@ -32,7 +35,7 @@ def find_result(index, query):
       for i, result in enumerate(results):
         print "%d) %s" % (i+1, result["filename"])
       print "Which one?"
-      choice = int(input()) - 1
+      choice = int(get_choice()) - 1
       result = results[choice]
     return result["filename"]
 
@@ -70,7 +73,7 @@ def command_rm(index, query):
     print "No results found"
   else:
     print "Are you sure you want to delete %s? (y/n)" % result_file
-    choice = raw_input()
+    choice = get_choice()
     if choice == "y":
       os.remove(result_file)
 
