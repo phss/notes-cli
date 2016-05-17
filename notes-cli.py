@@ -4,18 +4,14 @@ import shutil
 import os
 from subprocess import call
 from os.path import expanduser, isdir
-import whoosh.index as ix
-from whoosh.fields import *
-from whoosh.qparser import QueryParser
-from whoosh.query import FuzzyTerm, Term, Or
 
 import notescli.config
 import notescli.cliparser
+import notescli.indexer
+import notescli.io
 
 EDITOR = os.environ.get('EDITOR','vim')
 
-def get_choice():
-  return raw_input()
 
 def command_ls(index):
   with index.searcher() as searcher:
@@ -24,26 +20,8 @@ def command_ls(index):
     for result in results:
       print result["filename"]
 
-def find_result(index, query):
-  with index.searcher() as searcher:
-    terms = [FuzzyTerm("content", word, maxdist=2) for word in query]
-    search_query = Or(terms)
-    results = searcher.search(search_query)
-    if len(results) == 0:
-      return None
-    elif len(results) == 1:
-      result = results[0]
-    else:
-      print "Options:"
-      for i, result in enumerate(results):
-        print "%d) %s" % (i+1, result["filename"])
-      print "Which one?"
-      choice = int(get_choice()) - 1
-      result = results[choice]
-    return result["filename"]
-
 def command_view(index, query):
-  result_file = find_result(index, query)
+  result_file = notescli.indexer.find_result(index, query)
   if result_file is None:
     print "No results found"
   else:
@@ -76,7 +54,7 @@ def command_rm(index, query):
     print "No results found"
   else:
     print "Are you sure you want to delete %s? (y/n)" % result_file
-    choice = get_choice()
+    choice = notescli.io.get_choice()
     if choice == "y":
       os.remove(result_file)
 
@@ -93,18 +71,12 @@ def command_reindex(index_path, notes_path):
   writer.commit()
   return index
 
-def create_or_load_index(index_path, notes_path):
-  if isdir(index_path):
-    return ix.open_dir(index_path)
-  else:
-    return command_reindex(index_path, notes_path)
-
 def main():
   config = notescli.config.load_config_from("~/.notes-cli/config.yaml")
   index_path = expanduser(config["indexdir"])
   notes_path = expanduser(config["notesdir"])
   options = notescli.cliparser.parse_options()
-  index = create_or_load_index(index_path, notes_path)
+  index = notescli.indexer.create_or_load_index(index_path, notes_path)
   if options.command == "ls":
     command_ls(index)
   elif options.command == "view":
