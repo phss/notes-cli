@@ -10,6 +10,7 @@ from whoosh.qparser import QueryParser
 from whoosh.query import FuzzyTerm, Term, Or
 
 import notescli.config
+import notescli.cliparser
 
 EDITOR = os.environ.get('EDITOR','vim')
 
@@ -92,14 +93,6 @@ def command_reindex(index_path, notes_path):
   writer.commit()
   return index
 
-def parse_options():
-  parser = argparse.ArgumentParser()
-  parser.add_argument("command",
-                      choices=["ls", "add", "rm", "edit", "view", "reindex"])
-  parser.add_argument("query", nargs="*")
-  parser.add_argument("--file")
-  return parser.parse_args()
-
 def create_or_load_index(index_path, notes_path):
   if isdir(index_path):
     return ix.open_dir(index_path)
@@ -110,7 +103,7 @@ def main():
   config = notescli.config.load_config_from("~/.notes-cli/config.yaml")
   index_path = expanduser(config["indexdir"])
   notes_path = expanduser(config["notesdir"])
-  options = parse_options()
+  options = notescli.cliparser.parse_options()
   index = create_or_load_index(index_path, notes_path)
   if options.command == "ls":
     command_ls(index)
