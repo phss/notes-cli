@@ -9,6 +9,8 @@ from whoosh.fields import *
 from whoosh.qparser import QueryParser
 from whoosh.query import FuzzyTerm, Term, Or
 
+import notescli.config
+
 EDITOR = os.environ.get('EDITOR','vim')
 
 def get_choice():
@@ -90,10 +92,6 @@ def command_reindex(index_path, notes_path):
   writer.commit()
   return index
 
-def load_config_from(path):
-  with open(expanduser(path)) as file:
-    return yaml.load(file)
-
 def parse_options():
   parser = argparse.ArgumentParser()
   parser.add_argument("command",
@@ -109,7 +107,7 @@ def create_or_load_index(index_path, notes_path):
     return command_reindex(index_path, notes_path)
 
 def main():
-  config = load_config_from("~/.notes-cli/config.yaml")
+  config = notescli.config.load_config_from("~/.notes-cli/config.yaml")
   index_path = expanduser(config["indexdir"])
   notes_path = expanduser(config["notesdir"])
   options = parse_options()
