@@ -10,9 +10,6 @@ import notescli.cliparser
 import notescli.indexer
 import notescli.io
 
-EDITOR = os.environ.get('EDITOR','vim')
-
-
 def command_ls(index):
   with index.searcher() as searcher:
     results = searcher.documents()
@@ -27,29 +24,20 @@ def command_view(index, query):
   else:
     print open(result_file).read()
 
-def edit_file(full_path):
-  preread = ""
-  if os.path.isfile(full_path):
-    preread = open(full_path, "r").read()
-  with open(full_path, "w") as f:
-    f.write(preread)
-    f.flush()
-    call([EDITOR, f.name])
-
 def command_add(index, notes_path, filename):
   full_path = os.path.join(notes_path, filename)
-  edit_file(full_path)
+  notescli.io.edit_file(full_path)
   print "Added", full_path
 
 def command_edit(index, query):
-  result_file = find_result(index, query)
+  result_file = notescli.indexer.find_result(index, query)
   if result_file is None:
     print "No results found"
   else:
-    edit_file(result_file)
+    notescli.io.edit_file(result_file)
 
 def command_rm(index, query):
-  result_file = find_result(index, query)
+  result_file = notescli.indexer.find_result(index, query)
   if result_file is None:
     print "No results found"
   else:
@@ -59,17 +47,7 @@ def command_rm(index, query):
       os.remove(result_file)
 
 def command_reindex(index_path, notes_path):
-  shutil.rmtree(index_path, True)
-  os.mkdir(index_path)
-  schema = Schema(filename=TEXT(stored=True), content=TEXT)
-  index = ix.create_in(index_path, schema)
-  writer = index.writer()
-  for note in os.listdir(notes_path):
-    note_full_path = os.path.join(notes_path, note)
-    with open(note_full_path) as note_file:
-      writer.add_document(filename=unicode(note_full_path, "utf-8"), content=unicode(note_file.read(), "utf-8"))
-  writer.commit()
-  return index
+  notescli.indexer.reindex(index_path, notes_path)
 
 def main():
   config = notescli.config.load_config_from("~/.notes-cli/config.yaml")
