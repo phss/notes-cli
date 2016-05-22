@@ -5,7 +5,7 @@ from whoosh.fields import *
 from whoosh.qparser import QueryParser
 from whoosh.query import FuzzyTerm, Term, Or
 from os.path import expanduser, isdir
-import notescli.io
+import io
 
 def find_result(index, query):
   with index.searcher() as searcher:
@@ -21,7 +21,7 @@ def find_result(index, query):
       for i, result in enumerate(results):
         print "%d) %s" % (i+1, result["filename"])
       print "Which one?"
-      choice = int(notescli.io.get_choice()) - 1
+      choice = int(io.get_choice()) - 1
       result = results[choice]
     return result["filename"]
 
