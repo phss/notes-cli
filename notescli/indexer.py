@@ -1,4 +1,6 @@
 import whoosh.index as ix
+import shutil
+import os
 from whoosh.fields import *
 from whoosh.qparser import QueryParser
 from whoosh.query import FuzzyTerm, Term, Or
@@ -23,9 +25,22 @@ def find_result(index, query):
       result = results[choice]
     return result["filename"]
 
+def reindex(index_path, notes_path):
+  shutil.rmtree(index_path, True)
+  os.mkdir(index_path)
+  schema = Schema(filename=TEXT(stored=True), content=TEXT)
+  index = ix.create_in(index_path, schema)
+  writer = index.writer()
+  for note in os.listdir(notes_path):
+    note_full_path = os.path.join(notes_path, note)
+    with open(note_full_path) as note_file:
+      writer.add_document(filename=unicode(note_full_path, "utf-8"), content=unicode(note_file.read(), "utf-8"))
+  writer.commit()
+  return index
+
 def create_or_load_index(index_path, notes_path):
   if isdir(index_path):
     return ix.open_dir(index_path)
   else:
-    return command_reindex(index_path, notes_path)
+    return reindex(index_path, notes_path)
 
