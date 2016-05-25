@@ -13,7 +13,7 @@ import commands
 
 
 def main():
-  conf = config.load_config_from("~/.notes-cli/config.yaml")
+  conf = config.load_config("~/.notes-cli/config.yaml")
   index_path = expanduser(conf["indexdir"])
   notes_path = expanduser(conf["notesdir"])
   options = cliparser.parse_options()

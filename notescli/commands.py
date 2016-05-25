@@ -2,6 +2,7 @@ import config
 import cliparser
 import indexer
 import io
+import os
 
 def command_ls(index):
   with index.searcher() as searcher:
