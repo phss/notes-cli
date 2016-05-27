@@ -14,8 +14,8 @@ import commands
 
 def main():
   conf = config.load_config("~/.notes-cli/config.yaml")
-  index_path = expanduser(conf.indexdir)
-  notes_path = expanduser(conf.notesdir)
+  index_path = conf.indexdir
+  notes_path = conf.notesdir
   options = cliparser.parse_options()
   index = indexer.create_or_load_index(index_path, notes_path)
   if options.command == "ls":

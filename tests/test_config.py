@@ -1,4 +1,5 @@
 import unittest
+import os
 from notescli import config
 
 class TestConfig(unittest.TestCase):
@@ -7,3 +8,9 @@ class TestConfig(unittest.TestCase):
     loaded_conf = config.load_config("tests/fixtures/sample-config.yaml")
     self.assertEquals(loaded_conf.indexdir, "/tmp/some/index/dir")
     self.assertEquals(loaded_conf.notesdir, "/tmp/some/notes/dir")
+
+  def test_load_config_with_homedir(self):
+    home = os.environ["HOME"]
+    loaded_conf = config.load_config("tests/fixtures/config-with-homedir.yaml")
+    self.assertEquals(loaded_conf.indexdir, home + "/.tmp/index")
+    self.assertEquals(loaded_conf.notesdir, home + "/.tmp/notes")
