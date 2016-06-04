@@ -6,7 +6,7 @@ Config = namedtuple("Config", "indexdir notesdir")
 
 def load_config(path):
   with open(expanduser(path)) as file:
+    expand_dict = lambda key: expanduser(config_dict[key])
     config_dict = yaml.load(file)
-    return Config(expanduser(config_dict["indexdir"]),
-                  expanduser(config_dict["notesdir"]))
+    return Config(expand_dict("indexdir"), expand_dict("notesdir"))
 
