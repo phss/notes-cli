@@ -18,8 +18,8 @@ def command_view(index, query):
   else:
     print open(result_file).read()
 
-def command_add(index, notes_path, filename):
-  full_path = os.path.join(notes_path, filename)
+def command_add(config, filename):
+  full_path = os.path.join(config.notes_path, filename)
   io.edit_file(full_path)
   print "Added", full_path
 
@@ -40,5 +40,5 @@ def command_rm(index, query):
     if choice == "y":
       os.remove(result_file)
 
-def command_reindex(index_path, notes_path):
-  indexer.reindex(index_path, notes_path)
+def command_reindex(config):
+  indexer.reindex(config)

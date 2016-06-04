@@ -14,25 +14,23 @@ import commands
 
 def main():
   config = load_config("~/.notes-cli/config.yaml")
-  index_path = config.index_path
-  notes_path = config.notes_path
   options = cliparser.parse_options()
-  index = indexer.create_or_load_index(index_path, notes_path)
+  index = indexer.create_or_load_index(config)
   if options.command == "ls":
     commands.command_ls(index)
   elif options.command == "view":
     commands.command_view(index, options.query)
   elif options.command == "add":
-    commands.command_add(index, notes_path, options.file)
-    commands.command_reindex(index_path, notes_path)
+    commands.command_add(config, options.file)
+    commands.command_reindex(config)
   elif options.command == "edit":
     commands.command_edit(index, options.query)
-    commands.command_reindex(index_path, notes_path)
+    commands.command_reindex(config)
   elif options.command == "rm":
     commands.command_rm(index, options.query)
-    commands.command_reindex(index_path, notes_path)
+    commands.command_reindex(config)
   elif options.command == "reindex":
-    commands.command_reindex(index_path, notes_path)
+    commands.command_reindex(config)
   else:
     print "Not supported"
 
