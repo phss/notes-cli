@@ -2,7 +2,7 @@ import yaml
 from os.path import expanduser
 from collections import namedtuple
 
-Config = namedtuple("Config", "indexdir notesdir")
+Config = namedtuple("Config", "index_path notes_path")
 
 def load_config(path):
   with open(expanduser(path)) as file:

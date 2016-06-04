@@ -5,7 +5,7 @@ import os
 from subprocess import call
 from os.path import expanduser, isdir
 
-import config
+from config import load_config
 import cliparser
 import indexer
 import io
@@ -13,9 +13,9 @@ import commands
 
 
 def main():
-  conf = config.load_config("~/.notes-cli/config.yaml")
-  index_path = conf.indexdir
-  notes_path = conf.notesdir
+  config = load_config("~/.notes-cli/config.yaml")
+  index_path = config.index_path
+  notes_path = config.notes_path
   options = cliparser.parse_options()
   index = indexer.create_or_load_index(index_path, notes_path)
   if options.command == "ls":
