@@ -7,6 +7,10 @@ from whoosh.query import FuzzyTerm, Term, Or
 from os.path import expanduser, isdir
 import io
 
+class Index:
+  def __init__(self, index):
+    self.index = index
+
 def find_result(index, query):
   with index.searcher() as searcher:
     terms = [FuzzyTerm("content", word, maxdist=2) for word in query]
@@ -40,7 +44,7 @@ def reindex(config):
 
 def create_or_load_index(config):
   if isdir(config.index_path):
-    return ix.open_dir(config.index_path)
+    return Index(ix.open_dir(config.index_path))
   else:
-    return reindex(config)
+    return Index(reindex(config))
 
