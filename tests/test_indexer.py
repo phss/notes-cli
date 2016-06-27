@@ -1,11 +1,13 @@
 import unittest
 import os
+import tempfile
 from notescli import config as c, indexer
 
 class TestIndexer(unittest.TestCase):
 
   def test_create_index_from_scratch(self):
-    config = c.Config("/tmp/fakeindex", "tests/fixtures/docs_to_index/")
+    index_dir = tempfile.mktemp(prefix='notestest-')
+    config = c.Config(index_dir, "tests/fixtures/docs_to_index/")
     index = indexer.create_or_load_index(config)
     # assert something
     
