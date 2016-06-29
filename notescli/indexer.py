@@ -43,7 +43,9 @@ def reindex(config):
   return index
 
 def create_or_load_index(config):
-  if isdir(config.index_path) and os.listdir(config.index_path) != []:
+  if not isdir(config.notes_path):
+    return None
+  elif isdir(config.index_path) and os.listdir(config.index_path) != []:
     return Index(ix.open_dir(config.index_path))
   else:
     return Index(reindex(config))
