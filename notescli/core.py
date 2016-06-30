@@ -15,7 +15,7 @@ import commands
 def main():
   config = load_config("~/.notes-cli/config.yaml")
   options = cliparser.parse_options()
-  index = indexer.create_or_load_index(config).index
+  index = indexer.create_or_load_index(config)
   if options.command == "ls":
     commands.command_ls(index)
   elif options.command == "view":
