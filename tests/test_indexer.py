@@ -48,7 +48,10 @@ class TestListFilesInIndex(unittest.TestCase):
 
     index = indexer.create_or_load_index(config)
 
-    self.assertEqual(index.list_files(), ['first_doc.txt', 'second_doc.txt', 'unique_document.txt'])
+    self.assertEqual(index.list_files(),
+        ['tests/fixtures/docs_to_index/first_doc.txt',
+         'tests/fixtures/docs_to_index/second_doc.txt',
+         'tests/fixtures/docs_to_index/unique_document.txt'])
 
 
 # Common methods

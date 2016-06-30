@@ -14,6 +14,12 @@ class Index:
   def __init__(self, index):
     self.index = index
 
+  def list_files(self):
+    with self.index.searcher() as searcher:
+      results = searcher.documents()
+      return [result["filename"] for result in results]
+
+
 def find_result(index, query):
   with index.searcher() as searcher:
     terms = [FuzzyTerm("content", word, maxdist=2) for word in query]
