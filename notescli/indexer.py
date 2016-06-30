@@ -7,6 +7,9 @@ from whoosh.query import FuzzyTerm, Term, Or
 from os.path import expanduser, isdir
 import io
 
+class IndexerException(Exception):
+      pass
+
 class Index:
   def __init__(self, index):
     self.index = index
@@ -45,8 +48,10 @@ def reindex(config):
 def create_or_load_index(config):
   if not isdir(config.notes_path):
     return None
-  elif isdir(config.index_path) and os.listdir(config.index_path) != []:
+  elif not isdir(config.index_path) or os.listdir(config.index_path) == []:
+    return Index(reindex(config))
+  elif os.path.isfile(os.path.join(config.index_path, '_MAIN_1.toc')):
     return Index(ix.open_dir(config.index_path))
   else:
-    return Index(reindex(config))
+    raise IndexerException("index location %s doesn't contain index" % config.index_path)
 
