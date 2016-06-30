@@ -46,13 +46,14 @@ def reindex(config):
   return index
 
 def create_or_load_index(config):
+  if _invalid_index_path(config.index_path):
+    raise IndexerException("index location %s doesn't contain index" % config.index_path)
+
   if not isdir(config.notes_path):
     os.makedirs(config.notes_path)
 
-  if not isdir(config.index_path) or os.listdir(config.index_path) == []:
-    return Index(reindex(config))
-  elif os.path.isfile(os.path.join(config.index_path, '_MAIN_1.toc')):
-    return Index(ix.open_dir(config.index_path))
-  else:
-    raise IndexerException("index location %s doesn't contain index" % config.index_path)
+  return Index(reindex(config))
 
+def _invalid_index_path(path):
+  return isdir(path) and os.listdir(path) != [] \
+      and not os.path.isfile(os.path.join(path, '_MAIN_1.toc'))
