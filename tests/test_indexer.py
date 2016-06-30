@@ -6,7 +6,6 @@ from notescli.indexer import IndexerException
 
 class TestCreateIndex(unittest.TestCase):
 
-  # TODO: add better assertion at some point
   def test_create_index_from_scratch_in_inexistent_index_dir(self):
     config = self._config_with_temp_index_dir("tests/fixtures/docs_to_index/")
 
@@ -35,14 +34,12 @@ class TestCreateIndex(unittest.TestCase):
 
     self.assertRaises(IndexerException, indexer.create_or_load_index, config)
 
-  def test_fail_to_create_if_notes_path_dont_exist(self):
+  def test_creates_index_even_if_notes_path_dont_exist(self):
     config = self._config_with_temp_index_dir("/tmp/no/notes/dir")
 
     index = indexer.create_or_load_index(config)
 
-    self.assertIsNone(index)
-
-
+    self.assertIsNotNone(index)
 
   def _config_with_temp_index_dir(self, notes_dir):
     index_dir = tempfile.mktemp(prefix='notestest-')
