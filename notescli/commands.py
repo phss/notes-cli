@@ -5,11 +5,9 @@ import io
 import os
 
 def command_ls(index):
-  with index.index.searcher() as searcher:
-    results = searcher.documents()
-    print "Indexed files:"
-    for result in results:
-      print result["filename"]
+  print "Indexed files:"
+  for filename in index.list_files():
+    print filename
 
 def command_view(index, query):
   result_file = indexer.find_result(index.index, query)
