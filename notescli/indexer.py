@@ -19,6 +19,12 @@ class Index:
       results = searcher.documents()
       return [result["filename"] for result in results]
 
+  def search(self, query):
+    with self.index.searcher() as searcher:
+      terms = [FuzzyTerm("content", word, maxdist=2) for word in query]
+      search_query = Or(terms)
+      results = searcher.search(search_query)
+      return [result["filename"] for result in results]
 
 def find_result(index, query):
   with index.searcher() as searcher:

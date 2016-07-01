@@ -44,9 +44,7 @@ class TestCreateIndex(unittest.TestCase):
 class TestListFilesInIndex(unittest.TestCase):
 
   def test_list_files_in_index(self):
-    config = _config_with_temp_index_dir(FIXTURE_NOTES_PATH)
-
-    index = indexer.create_or_load_index(config)
+    index = _index_with_fixture_notes()
 
     self.assertEqual(index.list_files(),
         ['tests/fixtures/docs_to_index/first_doc.txt',
@@ -60,6 +58,15 @@ class TestListFilesInIndex(unittest.TestCase):
 
     self.assertEqual(index.list_files(), [])
 
+class TestIndexSearching(unittest.TestCase):
+
+  def test_searching_multiple_results(self):
+    index = _index_with_fixture_notes()
+
+    self.assertEqual(index.search('documents'),
+        ['tests/fixtures/docs_to_index/first_doc.txt',
+         'tests/fixtures/docs_to_index/second_doc.txt'])
+
 
 # Common methods
 FIXTURE_NOTES_PATH='tests/fixtures/docs_to_index/'
@@ -68,3 +75,8 @@ def _config_with_temp_index_dir(notes_dir):
   index_dir = tempfile.mktemp(prefix='notestest-')
   return c.Config(index_dir, notes_dir)
 
+def _index_with_fixture_notes():
+    config = _config_with_temp_index_dir(FIXTURE_NOTES_PATH)
+    return indexer.create_or_load_index(config)
+
+    self.assertIsNotNone(index)
