@@ -17,6 +17,7 @@ def command_view(index, query):
     print open(result_file).read()
 
 def command_add(config, filename):
+  # TODO: add better error for not specifying param
   full_path = os.path.join(config.notes_path, filename)
   io.edit_file(full_path)
   print "Added", full_path
