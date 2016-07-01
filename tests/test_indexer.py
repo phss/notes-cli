@@ -53,6 +53,13 @@ class TestListFilesInIndex(unittest.TestCase):
          'tests/fixtures/docs_to_index/second_doc.txt',
          'tests/fixtures/docs_to_index/unique_document.txt'])
 
+  def test_return_empty_list_when_no_notes(self):
+    config = _config_with_temp_index_dir(tempfile.mktemp())
+
+    index = indexer.create_or_load_index(config)
+
+    self.assertEqual(index.list_files(), [])
+
 
 # Common methods
 FIXTURE_NOTES_PATH='tests/fixtures/docs_to_index/'
