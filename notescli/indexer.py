@@ -28,18 +28,7 @@ class Index:
 
 def find_result(index, query):
   results = index.search(query)
-  if len(results) == 0:
-    return None
-  elif len(results) == 1:
-    result = results[0]
-  else:
-    print "Options:"
-    for i, result in enumerate(results):
-      print "%d) %s" % (i+1, result)
-    print "Which one?"
-    choice = int(io.get_choice()) - 1
-    result = results[choice]
-  return result
+  return io.get_user_choice(results)
 
 def reindex(config):
   shutil.rmtree(config.index_path, True)
