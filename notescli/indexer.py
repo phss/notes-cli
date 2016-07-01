@@ -27,22 +27,19 @@ class Index:
       return [result["filename"] for result in results]
 
 def find_result(index, query):
-  with index.searcher() as searcher:
-    terms = [FuzzyTerm("content", word, maxdist=2) for word in query]
-    search_query = Or(terms)
-    results = searcher.search(search_query)
-    if len(results) == 0:
-      return None
-    elif len(results) == 1:
-      result = results[0]
-    else:
-      print "Options:"
-      for i, result in enumerate(results):
-        print "%d) %s" % (i+1, result["filename"])
-      print "Which one?"
-      choice = int(io.get_choice()) - 1
-      result = results[choice]
-    return result["filename"]
+  results = index.search(query)
+  if len(results) == 0:
+    return None
+  elif len(results) == 1:
+    result = results[0]
+  else:
+    print "Options:"
+    for i, result in enumerate(results):
+      print "%d) %s" % (i+1, result)
+    print "Which one?"
+    choice = int(io.get_choice()) - 1
+    result = results[choice]
+  return result
 
 def reindex(config):
   shutil.rmtree(config.index_path, True)
