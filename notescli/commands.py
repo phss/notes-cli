@@ -10,7 +10,7 @@ def command_ls(index):
     print filename
 
 def command_view(index, query):
-  result_file = indexer.find_result(index, query)
+  result_file = _find_result(index, query)
   if result_file is None:
     print "No results found"
   else:
@@ -23,14 +23,14 @@ def command_add(config, filename):
   print "Added", full_path
 
 def command_edit(index, query):
-  result_file = indexer.find_result(index, query)
+  result_file = _find_result(index, query)
   if result_file is None:
     print "No results found"
   else:
     io.edit_file(result_file)
 
 def command_rm(index, query):
-  result_file = indexer.find_result(index, query)
+  result_file = _find_result(index, query)
   if result_file is None:
     print "No results found"
   else:
@@ -41,3 +41,8 @@ def command_rm(index, query):
 
 def command_reindex(config):
   indexer.reindex(config)
+
+def _find_result(index, query):
+  results = index.search(query)
+  return io.get_user_choice(results)
+
