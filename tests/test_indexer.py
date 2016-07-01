@@ -60,17 +60,36 @@ class TestListFilesInIndex(unittest.TestCase):
 
 class TestIndexSearching(unittest.TestCase):
 
-  def test_searching_multiple_results(self):
+  def test_return_multiple_results(self):
     index = _index_with_fixture_notes()
 
-    self.assertEqual(index.search('documents'),
+    self.assertEqual(index.search('nothing'),
         ['tests/fixtures/docs_to_index/first_doc.txt',
          'tests/fixtures/docs_to_index/second_doc.txt'])
+
+  def test_return_ordered_by_relevance(self):
+    index = _index_with_fixture_notes()
+
+    self.assertEqual(index.search('nothing blah'),
+        ['tests/fixtures/docs_to_index/unique_document.txt',
+         'tests/fixtures/docs_to_index/first_doc.txt',
+         'tests/fixtures/docs_to_index/second_doc.txt'])
+
+  def test_return_single_result(self):
+    index = _index_with_fixture_notes()
+
+    self.assertEqual(index.search('blah'),
+        ['tests/fixtures/docs_to_index/unique_document.txt'])
+
+  def test_return_no_results(self):
+    index = _index_with_fixture_notes()
+
+    self.assertEqual(index.search('xyz'), [])
 
 
 # Common methods
 FIXTURE_NOTES_PATH='tests/fixtures/docs_to_index/'
-    
+
 def _config_with_temp_index_dir(notes_dir):
   index_dir = tempfile.mktemp(prefix='notestest-')
   return c.Config(index_dir, notes_dir)
