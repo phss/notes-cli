@@ -3,9 +3,6 @@ from subprocess import call
 
 EDITOR = os.environ.get('EDITOR','vim')
 
-def get_choice():
-  return raw_input()
-
 def edit_file(full_path):
   preread = ""
   if os.path.isfile(full_path):
@@ -14,6 +11,15 @@ def edit_file(full_path):
     f.write(preread)
     f.flush()
     call([EDITOR, f.name])
+
+def print_file(full_path):
+  print open(full_path).read()
+
+def delete_file(full_path):
+  print "Are you sure you want to delete %s? (y/n)" % full_path
+  choice = io.get_choice()
+  if choice == "y":
+    os.remove(full_path)
 
 def get_user_choice(options):
   if len(options) == 0:
@@ -28,3 +34,7 @@ def get_user_choice(options):
     choice = int(get_choice()) - 1
     option = options[choice]
   return option
+
+def get_choice():
+  return raw_input()
+

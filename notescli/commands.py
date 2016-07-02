@@ -9,11 +9,7 @@ def command_ls(index):
     print filename
 
 def command_view(index, query):
-  result_file = _find_result(index, query)
-  if result_file is None:
-    print "No results found"
-  else:
-    print open(result_file).read()
+  _search_and_do(index, query, io.print_file)
 
 def command_add(config, filename):
   # TODO: add better error for not specifying param
@@ -22,23 +18,16 @@ def command_add(config, filename):
   print "Added", full_path
 
 def command_edit(index, query):
-  result_file = _find_result(index, query)
-  if result_file is None:
-    print "No results found"
-  else:
-    io.edit_file(result_file)
+  _search_and_do(index, query, io.edit_file)
 
 def command_rm(index, query):
-  result_file = _find_result(index, query)
+  _search_and_do(index, query, io.delete_file)
+
+def _search_and_do(index, query, action):
+  results = index.search(query)
+  result_file = io.get_user_choice(results)
   if result_file is None:
     print "No results found"
   else:
-    print "Are you sure you want to delete %s? (y/n)" % result_file
-    choice = io.get_choice()
-    if choice == "y":
-      os.remove(result_file)
-
-def _find_result(index, query):
-  results = index.search(query)
-  return io.get_user_choice(results)
+    action(result_file)
 
