@@ -26,10 +26,6 @@ class Index:
       results = searcher.search(search_query)
       return [result["filename"] for result in results]
 
-def find_result(index, query):
-  results = index.search(query)
-  return io.get_user_choice(results)
-
 def reindex(config):
   shutil.rmtree(config.index_path, True)
   os.mkdir(config.index_path)
