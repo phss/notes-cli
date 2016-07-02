@@ -1,6 +1,5 @@
 import config
 import cliparser
-import indexer
 import io
 import os
 
@@ -38,9 +37,6 @@ def command_rm(index, query):
     choice = io.get_choice()
     if choice == "y":
       os.remove(result_file)
-
-def command_reindex(config):
-  indexer.reindex(config)
 
 def _find_result(index, query):
   results = index.search(query)

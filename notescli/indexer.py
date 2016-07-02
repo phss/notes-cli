@@ -26,7 +26,20 @@ class Index:
       results = searcher.search(search_query)
       return [result["filename"] for result in results]
 
-def reindex(config):
+def create_or_load_index(config):
+  if _invalid_index_path(config.index_path):
+    raise IndexerException("index location %s doesn't contain index" % config.index_path)
+
+  if not isdir(config.notes_path):
+    os.makedirs(config.notes_path)
+
+  return Index(_recreate_whoosh_index(config))
+
+def _invalid_index_path(path):
+  return isdir(path) and os.listdir(path) != [] \
+      and not os.path.isfile(os.path.join(path, '_MAIN_1.toc'))
+
+def _recreate_whoosh_index(config):
   shutil.rmtree(config.index_path, True)
   os.mkdir(config.index_path)
   schema = Schema(filename=TEXT(stored=True), content=TEXT)
@@ -39,15 +52,3 @@ def reindex(config):
   writer.commit()
   return index
 
-def create_or_load_index(config):
-  if _invalid_index_path(config.index_path):
-    raise IndexerException("index location %s doesn't contain index" % config.index_path)
-
-  if not isdir(config.notes_path):
-    os.makedirs(config.notes_path)
-
-  return Index(reindex(config))
-
-def _invalid_index_path(path):
-  return isdir(path) and os.listdir(path) != [] \
-      and not os.path.isfile(os.path.join(path, '_MAIN_1.toc'))

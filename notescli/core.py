@@ -26,8 +26,6 @@ def main():
     commands.command_edit(index, options.query)
   elif options.command == "rm":
     commands.command_rm(index, options.query)
-  elif options.command == "reindex":
-    commands.command_reindex(config)
   else:
     print "Not supported"
 
